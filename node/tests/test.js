@@ -1,15 +1,13 @@
 const fastwatch = require('../build/Release/fastwatch.node')
-const { exec } = require('child_process')
 
-console.log("hi")
+const enums = fastwatch.EventType
+console.log(enums)
 
-function watch(event, path) {
-    console.log(event, path)
-    if (event == "modify") {
-        exec(`node ${__filename}`);
+function watch(path, event) {
+    console.log(path, event)
+    if (event == fastwatch.EventType.CREATE) {
+        console.log("new file")
     }
 }
 
-// oh yeah
-
-fastwatch.start("./", watch)
+fastwatch.watch("./", watch)

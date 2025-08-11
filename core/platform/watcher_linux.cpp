@@ -2,12 +2,10 @@
 #include <sys/inotify.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <vector>
-#include <iostream>
-#include <cstring>
 #include <filesystem>
 #include <map>
 #include <poll.h>
+#include "watcher_event_types.h"
 #include "watcher_core.h"
 
 namespace fastwatch {
@@ -49,7 +47,7 @@ namespace fastwatch {
                 
                 if (event->mask & IN_CREATE) {
                     std::string new_path = file;
-                    callback(new_path, "create");
+                    callback(new_path, FASTWATCH_EVENT_CREATED);
 
                     if (recursive) {
                         struct stat statbuf;
@@ -58,9 +56,9 @@ namespace fastwatch {
                         }
                     }
                 }
-                if (event->mask & IN_MODIFY) callback(file, "modify");
-                if (event-> mask & IN_DELETE) callback(file, "delete");
-                if (event->mask & IN_MOVED_FROM || event->mask & IN_MOVED_TO) callback(file, "move");
+                if (event->mask & IN_MODIFY) callback(file, FASTWATCH_EVENT_MODIFIED);
+                if (event-> mask & IN_DELETE) callback(file, FASTWATCH_EVENT_DELETED);
+                if (event->mask & IN_MOVED_FROM || event->mask & IN_MOVED_TO) callback(file, FASTWATCH_EVENT_MOVED);
 
                 i += sizeof(inotify_event) + event->len;
             }

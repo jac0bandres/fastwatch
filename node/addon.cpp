@@ -3,16 +3,25 @@
 
 Napi::ThreadSafeFunction tsfn;
 
-void fastwatch_c_callback(const char* path, const char* event) {
+void fastwatch_c_callback(const char* path, fastwatch_event_t event) {
     tsfn.BlockingCall([=](Napi::Env env, Napi::Function jsCallback) {
         jsCallback.Call({
             Napi::String::New(env, path),
-            Napi::String::New(env, event)
+            Napi::Number::New(env, event)
         });
     });
 }
 
-Napi::Value Start(const Napi::CallbackInfo& info) {
+Napi::Object CreateEventEnum(Napi::Env env) {
+    Napi::Object eventEnum = Napi::Object::New(env);
+    eventEnum.Set("CREATE", Napi::Number::New(env, static_cast<int>(FASTWATCH_EVENT_CREATED)));
+    eventEnum.Set("MODIFY", Napi::Number::New(env, static_cast<int>(FASTWATCH_EVENT_MODIFIED)));
+    eventEnum.Set("DELETE", Napi::Number::New(env, static_cast<int>(FASTWATCH_EVENT_DELETED)));
+    eventEnum.Set("MOVE", Napi::Number::New(env, static_cast<int>(FASTWATCH_EVENT_MOVED)));
+    return eventEnum;
+}
+
+Napi::Value Watch(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
 
     if (!info[0].IsString() || !info[1].IsFunction()) {
@@ -27,7 +36,7 @@ Napi::Value Start(const Napi::CallbackInfo& info) {
         env, callback, "fastwatch_callback", 0, 1
     );
 
-    fastwatch_start(path.c_str(), 1, fastwatch_c_callback);
+    fastwatch_watch(path.c_str(), 1, fastwatch_c_callback);
     
     return env.Undefined();
 }
@@ -41,8 +50,9 @@ Napi::Value Stop(const Napi::CallbackInfo& info) {
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
-    exports.Set("start", Napi::Function::New(env, Start));
+    exports.Set("watch", Napi::Function::New(env, Watch));
     exports.Set("stop", Napi::Function::New(env, Stop));
+    exports.Set("EventType", CreateEventEnum(env));
     return exports;
 }
 

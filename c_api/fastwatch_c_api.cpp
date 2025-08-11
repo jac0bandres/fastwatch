@@ -2,14 +2,14 @@
 #include "../core/watcher_core.h"
 
 static fastwatch::Watcher* watcher = nullptr;
-void fastwatch_start(const char* path, int recursive, fastwatch_callback_t cb) {
+void fastwatch_watch(const char* path, int recursive, fastwatch_callback_t cb) {
     if (watcher) return;
 
     watcher = new fastwatch::Watcher(
         std::string(path),
         recursive != 0,
-        [cb](const std::string& path, const std::string& event) {
-            cb(path.c_str(), event.c_str());
+        [cb](const std::string& path, fastwatch_event_t event) {
+            cb(path.c_str(), event);
         }
     );
 

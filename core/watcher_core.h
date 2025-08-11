@@ -4,9 +4,10 @@
 #include <functional>
 #include <thread>
 #include <atomic>
+#include "./watcher_event_types.h"
 
 namespace fastwatch {
-    using WatchCallback = std::function<void(const std::string&path, const std::string& event)>;
+    using WatchCallback = std::function<void(const std::string& path, fastwatch_event_t event)>;
 
     class Watcher {
         public:

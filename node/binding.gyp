@@ -6,17 +6,12 @@
         "addon.cpp"
       ],
       "include_dirs": [
-        "../c_api",
+        "<(module_root_dir)/../c_api",
         "<!(node -p \"require('node-addon-api').include\")"
       ],
       "libraries": [
-        "-L<(module_root_dir)/../build",
-        "-lfastwatch"
+        "<(module_root_dir)/../build/libfastwatch.a"
       ],
-      "ldflags": [
-        "-L<(module_root_dir)/../build",
-        "-lfastwatch"
-       ],
       "dependencies": [
         "<!(node -p \"require('node-addon-api').gyp\")"
       ],
