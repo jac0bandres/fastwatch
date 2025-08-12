@@ -1,4 +1,4 @@
-i# fastwatch
+# fastwatch
 
 A high-performance, cross-platform file system watcher written in C++ with Node.js bindings.
 
