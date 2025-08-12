@@ -12,13 +12,18 @@ A high-performance, cross-platform file system watcher written in C++ with Node.
 ## Usage (Node.js)
 
 ```js
-const fastwatch = require('./build/Release/fastwatch');
+const fastwatch = require('../build/Release/fastwatch.node')
 
-const watcher = new fastwatch.FastWatch('/path/to/watch', true);
+function watch(path, event) {
+    console.log(path, event)
+    if (event == fastwatch.EventType.CREATE) {
+        console.log("new file")
+    }
+}
 
-watcher.start((path, event) => {
-  console.log(`File ${event}: ${path}`);
-});
-
-// Stop watcher when done
-// watcher.stop();
+fastwatch.watch("./", watch)
+watcher.stop();
+```
+## Event-driven
+`fastwatch.EventType` contains C++ enum mappings to common file events, translated to JavaScript objects and cross-platform support.
+File watching is event-driven using native APIs, with no polling or additional overhead.
