@@ -27,3 +27,9 @@ watcher.stop();
 ## Event-driven
 `fastwatch.EventType` contains C++ enum mappings to common file events, translated to JavaScript objects and cross-platform support.
 File watching is event-driven using native APIs, with no polling or additional overhead.
+
+## Building
+### CMAKE
+Run cmake from the build directory to build the C++ source. 
+### Node Addon
+run `node-gyp configure build` in the `/node` directory to build node addon. It compiles the source relative to it's path so don't change the `/node` location relative to `/build` unless you plan on editing `binding.gyp`.
